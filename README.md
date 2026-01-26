@@ -1,6 +1,6 @@
 # SnipVault
 
-SnipVault is a desktop app that allows developers to manager their code snippets in one place.
+SnipVault is a desktop app that allows developers to manage their code snippets in one place.
 This is a project made for learning purposes in order to dive into Tauri, React and TypeScript.
 
 This is still in very early development.
