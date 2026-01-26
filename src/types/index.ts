@@ -1,0 +1,18 @@
+export interface Snippet {
+  id: number;
+  title: string;
+  description: string;
+  content: string;
+  language: string;
+  tags: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type CreateSnippetInput = Omit<Snippet, 'id' | 'updatedAt'>;
+
+export interface Language {
+  title: string;
+  count: number;
+  badgeColor: string;
+}
