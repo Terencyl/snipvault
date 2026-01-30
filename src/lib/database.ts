@@ -1,6 +1,17 @@
 import { CreateSnippetInput, Snippet } from "@/types";
 import Database from "@tauri-apps/plugin-sql";
 
+interface SnippetRow {
+  id: number;
+  title: string;
+  description: string;
+  content: string;
+  language: string;
+  tags: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export class SnippetDatabase {
   private db: Database | null = null;
 
@@ -39,10 +50,19 @@ export class SnippetDatabase {
     }
 
     try {
-      const snippets = await this.db!.select<Snippet[]>(
+      const snippets = await this.db!.select<SnippetRow[]>(
         "SELECT * FROM snippets",
       );
-      return snippets;
+      return snippets.map((snippet) => ({
+        id: snippet.id,
+        title: snippet.title,
+        description: snippet.description,
+        content: snippet.content,
+        language: snippet.language,
+        tags: snippet.tags.split(",").map((tag) => tag.trim()),
+        createdAt: new Date(snippet.created_at),
+        updatedAt: new Date(snippet.updated_at),
+      }));
     } catch (error) {
       console.error("Error fetching snippets:", error);
       throw error;
@@ -55,11 +75,19 @@ export class SnippetDatabase {
     }
 
     try {
-      const snippet = await this.db!.select<Snippet>(
+      const snippet = await this.db!.select<any>(
         "SELECT * FROM snippets WHERE id = ?",
         [id],
       );
-      return snippet;
+      return {
+        ...snippet,
+        tags:
+          typeof snippet.tags === "string"
+            ? snippet.tags.split(",").map((tag: string) => tag.trim())
+            : [],
+        createdAt: new Date(snippet.created_at),
+        updatedAt: new Date(snippet.updated_at),
+      };
     } catch (error) {
       console.error("Error fetching snippet:", error);
       throw error;

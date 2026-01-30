@@ -9,10 +9,9 @@ export interface Snippet {
   updatedAt: Date;
 }
 
-export type CreateSnippetInput = Omit<Snippet, 'id' | 'updatedAt'>;
+export type CreateSnippetInput = Omit<Snippet, "id" | "updatedAt">;
 
 export interface Language {
-  title: string;
-  count: number;
-  badgeColor: string;
+  id: string;
+  label: string;
 }

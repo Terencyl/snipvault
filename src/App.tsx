@@ -5,10 +5,11 @@ import SnippetList from "./components/snippets/SnippetList";
 import { useEffect, useState } from "react";
 import { SnippetDatabase } from "./lib/database";
 import { CreateSnippetInput, Snippet } from "./types";
+import SnippetView from "./components/snippets/SnippetView";
 
 function App() {
   const db: SnippetDatabase = new SnippetDatabase();
-  const [snippet, setSnippet] = useState<Snippet | null>(null);
+  const [selectedSnippet, setSelectedSnippet] = useState<Snippet | null>(null);
   const [snippetList, setSnippets] = useState<Snippet[]>([]);
 
   useEffect(() => {
@@ -23,10 +24,9 @@ function App() {
     loadSnippets();
   }, []);
 
-  const handleNewSnippet = async (snippet: CreateSnippetInput) => {
+  const createNewSnippet = async (snippet: CreateSnippetInput) => {
     try {
       await db.createSnippet(snippet);
-      console.log("Snippet created:", snippet);
       const updatedSnippets = await db.getAllSnippets();
       setSnippets(updatedSnippets);
     } catch (error) {
@@ -34,42 +34,32 @@ function App() {
     }
   };
 
-  const deleteSnippetAtId = async (id: number) => {
+  const deleteSnippet = async (id: number) => {
     try {
       await db.deleteSnippet(id);
-      console.log("Snippet deleted with id:", id);
       await refreshSnippets();
     } catch (error) {
       console.error("Error deleting snippet:", error);
     }
   };
 
-  const selectSnippet = (snippet: Snippet) => {
-    setSnippet(snippet);
-    console.log("Selected snippet:", snippet);
-  };
-
-  async function refreshSnippets() {
+  const refreshSnippets = async () => {
     const updatedSnippets = await db.getAllSnippets();
     setSnippets(updatedSnippets);
-  }
+  };
 
   return (
     <SidebarProvider>
-      <AppSidebar onNewSnippet={handleNewSnippet} />
+      <AppSidebar onNewSnippet={createNewSnippet} />
       <main className="flex h-screen flex-1 flex-row overflow-hidden">
         <SnippetList
           snippets={snippetList}
-          onSnippetDeleted={deleteSnippetAtId}
-          onSnippetSelected={selectSnippet}
+          onSnippetDeleted={deleteSnippet}
+          onSnippetSelected={setSelectedSnippet}
         />
         <div className="p-6 w-2/3 overflow-auto">
-          {snippet ? (
-            <div>
-              <h2>{snippet.title}</h2>
-              <p>{snippet.description}</p>
-              <pre>{snippet.content}</pre>
-            </div>
+          {selectedSnippet ? (
+            <SnippetView snippet={selectedSnippet} />
           ) : (
             <p>Select a snippet to view its details.</p>
           )}

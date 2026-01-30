@@ -13,14 +13,14 @@ import {
 import { Separator } from "./ui/separator";
 import Collection from "./Collection";
 import LanguageBadge from "./LanguageBadge";
-import { CreateSnippetInput, Language } from "@/types";
+import { CreateSnippetInput } from "@/types";
 import CreateSnippetDialog from "./snippets/CreateSnippetDialog";
 
 interface AppSidebarProps {
   onNewSnippet: (snippet: CreateSnippetInput) => void;
 }
 
-const languages: Language[] = [
+const languages = [
   {
     title: "C#",
     count: 2,
@@ -68,9 +68,8 @@ export function AppSidebar({ onNewSnippet }: AppSidebarProps) {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="px-2 pt-4 pb-2 text-2xl font-bold">
+          <SidebarGroupLabel className="px-2 pt-4 pb-2 text-2xl font-bold mt-2 mb-2 ">
             SnipVault
-            {/*<SidebarTrigger />*/}
           </SidebarGroupLabel>
           <Separator className="my-2" />
           <SidebarGroupContent className="pb-4">
