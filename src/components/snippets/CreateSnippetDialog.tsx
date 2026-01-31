@@ -15,22 +15,48 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 
 import LanguageComboBox from "../LanguageComboBox";
+import { Editor } from "@monaco-editor/react";
 
 export interface CreateSnippetDialogProps {
   onSubmit: (snippet: CreateSnippetInput) => void;
   children: ReactNode;
 }
 
+const defaultValues = {
+  title: "New Snippet",
+  language: "CSharp",
+  tags: "C#, Example",
+  description: "Your snippet description",
+  content: "// Your code here",
+};
+
 export default function CreateSnippetDialog({
   onSubmit,
   children,
 }: CreateSnippetDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [title, setTitle] = useState("New Snippet");
-  const [language, setLanguage] = useState("CSharp");
-  const [tags, setTags] = useState("C#, Example");
-  const [description, setDescription] = useState("Your snippet description");
-  const [content, setContent] = useState("// Your code here");
+  const [title, setTitle] = useState(defaultValues.title);
+  const [language, setLanguage] = useState(defaultValues.language);
+  const [tags, setTags] = useState(defaultValues.tags);
+  const [description, setDescription] = useState(defaultValues.description);
+  const [content, setContent] = useState(defaultValues.content);
+
+  const resetForm = () => {
+    setTitle(defaultValues.title);
+    setLanguage(defaultValues.language);
+    setTags(defaultValues.tags);
+    setDescription(defaultValues.description);
+    setContent(defaultValues.content);
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    console.log("Dialog open state:", open);
+    if (!open) {
+      resetForm();
+      console.log("Form reset to default values");
+    }
+  };
 
   const handleSubmit = () => {
     const newSnippet: CreateSnippetInput = {
@@ -43,10 +69,11 @@ export default function CreateSnippetDialog({
     };
     onSubmit(newSnippet);
     setIsOpen(false);
+    resetForm();
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-106.25">
         <DialogHeader>
@@ -79,12 +106,20 @@ export default function CreateSnippetDialog({
           onChange={(e) => setDescription(e.currentTarget.value)}
         />
         <Label htmlFor="bio-1">Code</Label>
-        <Input
-          id="bio-1"
-          name="content"
-          defaultValue={content}
-          onChange={(e) => setContent(e.currentTarget.value)}
-        />
+        <pre className="bg-snippet-list p-4 rounded-md overflow-auto">
+          <Editor
+            height="25vh"
+            language={language}
+            value={content}
+            defaultValue="// Your code here"
+            theme="vs-dark"
+            onChange={(value) => setContent(value || "")}
+            options={{
+              minimap: { enabled: false },
+              lineNumbers: "on",
+            }}
+          />
+        </pre>
         <DialogFooter>
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>

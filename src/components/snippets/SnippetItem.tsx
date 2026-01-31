@@ -8,6 +8,8 @@ import {
 } from "../ui/item";
 import { X, StarIcon } from "lucide-react";
 import { Button } from "../ui/button";
+import * as monaco from "monaco-editor";
+import { getLanguageColor } from "@/lib/languageColors";
 
 export interface SnippetCardProps {
   snippet: Snippet;
@@ -20,6 +22,10 @@ export default function SnippetItem({
   onSnippetDeleted,
   onSnippetSelected,
 }: SnippetCardProps) {
+  const languages = monaco.languages.getLanguages();
+  const language = languages.find((lang) => lang.id === snippet.language);
+  const languageColor = getLanguageColor(snippet.language);
+
   return (
     <div className="flex w-full max-w-md flex-col gap-6">
       <Item
@@ -29,11 +35,23 @@ export default function SnippetItem({
       >
         <ItemContent>
           <ItemTitle>{snippet.title}</ItemTitle>
-          {/* todo: make it so that it displays the language's badge */}
           <ItemDescription>
-            <span className="text-muted-foreground">{snippet.language}</span>
-            <span className="mx-1">•</span>
-            <span className="text-muted-foreground">{snippet.description}</span>
+            <div className="mb-2 flex items-center gap-2">
+              <span
+                className={`rounded-full ${languageColor.bgClass} inline-block text-white px-2 py-1 text-sm`}
+              >
+                {language?.aliases ? language.aliases[0] : snippet.language}
+              </span>
+              {snippet.tags ? (
+                <div>
+                  {snippet.tags.map((tag) => (
+                    <span key={tag} className="text-muted-foreground px-2 py-1">
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
+            </div>
           </ItemDescription>
         </ItemContent>
         <ItemActions className="flex">

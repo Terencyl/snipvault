@@ -6,6 +6,7 @@ export interface SnippetViewProps {
 }
 
 export default function SnippetView({ snippet }: SnippetViewProps) {
+  
   return (
     <div className="flex-1 bg-background p-6">
       <h1 className="text-2xl font-bold mb-2">{snippet.title}</h1>
@@ -24,7 +25,7 @@ export default function SnippetView({ snippet }: SnippetViewProps) {
       ) : null}
       <pre className="bg-snippet-list p-4 rounded-md overflow-auto">
         <Editor
-          height="80vh"
+          height="75vh"
           language={snippet.language}
           value={snippet.content}
           defaultValue="// Your code here"

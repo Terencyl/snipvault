@@ -2,20 +2,22 @@ import "./App.css";
 import { SidebarProvider } from "./components/ui/sidebar";
 import { AppSidebar } from "./components/AppSidebar";
 import SnippetList from "./components/snippets/SnippetList";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { SnippetDatabase } from "./lib/database";
 import { CreateSnippetInput, Snippet } from "./types";
 import SnippetView from "./components/snippets/SnippetView";
 
 function App() {
-  const db: SnippetDatabase = new SnippetDatabase();
+  const db = useRef<SnippetDatabase | null>(null);
   const [selectedSnippet, setSelectedSnippet] = useState<Snippet | null>(null);
   const [snippetList, setSnippets] = useState<Snippet[]>([]);
 
   useEffect(() => {
+    db.current = new SnippetDatabase();
     const loadSnippets = async () => {
       try {
-        const snippets = await db.getAllSnippets();
+        if (!db.current) return;
+        const snippets = await db.current.getAllSnippets();
         setSnippets(snippets);
       } catch (error) {
         console.error("Error loading snippets:", error);
@@ -26,8 +28,9 @@ function App() {
 
   const createNewSnippet = async (snippet: CreateSnippetInput) => {
     try {
-      await db.createSnippet(snippet);
-      const updatedSnippets = await db.getAllSnippets();
+      if (!db.current) return;
+      await db.current.createSnippet(snippet);
+      const updatedSnippets = await db.current.getAllSnippets();
       setSnippets(updatedSnippets);
     } catch (error) {
       console.error("Error creating snippet:", error);
@@ -36,7 +39,8 @@ function App() {
 
   const deleteSnippet = async (id: number) => {
     try {
-      await db.deleteSnippet(id);
+      if (!db.current) return;
+      await db.current.deleteSnippet(id);
       await refreshSnippets();
     } catch (error) {
       console.error("Error deleting snippet:", error);
@@ -44,7 +48,8 @@ function App() {
   };
 
   const refreshSnippets = async () => {
-    const updatedSnippets = await db.getAllSnippets();
+    if (!db.current) return;
+    const updatedSnippets = await db.current.getAllSnippets();
     setSnippets(updatedSnippets);
   };
 

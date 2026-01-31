@@ -15,52 +15,31 @@ import Collection from "./Collection";
 import LanguageBadge from "./LanguageBadge";
 import { CreateSnippetInput } from "@/types";
 import CreateSnippetDialog from "./snippets/CreateSnippetDialog";
+import { getLanguageColor } from "@/lib/languageColors";
 
 interface AppSidebarProps {
   onNewSnippet: (snippet: CreateSnippetInput) => void;
 }
 
-const languages = [
-  {
-    title: "C#",
-    count: 2,
-    badgeColor: "bg-purple-600",
-  },
-  {
-    title: "TypeScript",
-    count: 1,
-    badgeColor: "bg-blue-600",
-  },
-  {
-    title: "Python",
-    count: 1,
-    badgeColor: "bg-yellow-600",
-  },
-  {
-    title: "Rust",
-    count: 3,
-    badgeColor: "bg-orange-600",
-  },
-  {
-    title: "Java",
-    count: 2,
-    badgeColor: "bg-red-600",
-  },
-];
+const placeholderLanguages = [
+  { id: "csharp", count: 2 },
+  { id: "typescript", count: 1 },
+  { id: "python", count: 1 },
+  { id: "rust", count: 3 },
+  { id: "java", count: 2 },
+].map((lang) => {
+  const color = getLanguageColor(lang.id);
+  return {
+    title: color.label,
+    count: lang.count,
+    badgeColor: color.bgClass,
+  };
+});
 
-const collections = [
-  {
-    title: "Utils",
-    count: 4,
-  },
-  {
-    title: "API Helpers",
-    count: 3,
-  },
-  {
-    title: "Database",
-    count: 5,
-  },
+const placeholderCollections = [
+  { title: "Utils", count: 4 },
+  { title: "API Helpers", count: 3 },
+  { title: "Database", count: 5 },
 ];
 
 export function AppSidebar({ onNewSnippet }: AppSidebarProps) {
@@ -123,7 +102,7 @@ export function AppSidebar({ onNewSnippet }: AppSidebarProps) {
           </SidebarGroupLabel>
           <SidebarGroupContent className="pb-4">
             <SidebarMenu>
-              {languages.map((language) => (
+              {placeholderLanguages.map((language) => (
                 <LanguageBadge key={language.title} {...language} />
               ))}
             </SidebarMenu>
@@ -134,7 +113,7 @@ export function AppSidebar({ onNewSnippet }: AppSidebarProps) {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {collections.map((collection) => (
+              {placeholderCollections.map((collection) => (
                 <Collection
                   key={collection.title}
                   title={collection.title}

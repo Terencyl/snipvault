@@ -75,18 +75,19 @@ export class SnippetDatabase {
     }
 
     try {
-      const snippet = await this.db!.select<any>(
+      const snippet = await this.db!.select<SnippetRow[]>(
         "SELECT * FROM snippets WHERE id = ?",
         [id],
       );
       return {
-        ...snippet,
-        tags:
-          typeof snippet.tags === "string"
-            ? snippet.tags.split(",").map((tag: string) => tag.trim())
-            : [],
-        createdAt: new Date(snippet.created_at),
-        updatedAt: new Date(snippet.updated_at),
+        id: snippet[0].id,
+        title: snippet[0].title,
+        description: snippet[0].description,
+        content: snippet[0].content,
+        language: snippet[0].language,
+        tags: snippet[0].tags.split(",").map((tag) => tag.trim()),
+        createdAt: new Date(snippet[0].created_at),
+        updatedAt: new Date(snippet[0].updated_at),
       };
     } catch (error) {
       console.error("Error fetching snippet:", error);
