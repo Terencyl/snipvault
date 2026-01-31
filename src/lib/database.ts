@@ -103,7 +103,7 @@ export class SnippetDatabase {
     try {
       await this.db!.execute(
         "UPDATE snippets SET title = ?, content = ?, updated_at = ? WHERE id = ?",
-        [snippet.title, snippet.content, Date.now, id],
+        [snippet.title, snippet.content, Date.now(), id],
       );
     } catch (error) {
       console.error("Error updating snippet:", error);
