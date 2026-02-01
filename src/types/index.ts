@@ -11,6 +11,14 @@ export interface Snippet {
 
 export type CreateSnippetInput = Omit<Snippet, "id" | "updatedAt">;
 
+export type SnippetFormValues = {
+  title: string;
+  description: string;
+  content: string;
+  language: string;
+  tags: string;
+};
+
 export interface Language {
   id: string;
   label: string;

@@ -10,11 +10,11 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Separator } from "./ui/separator";
-import Collection from "./Collection";
-import LanguageBadge from "./LanguageBadge";
+import { Separator } from "@/components/ui/separator";
+import Collection from "@/components/Collection";
+import LanguageBadge from "@/components/LanguageBadge";
 import { CreateSnippetInput } from "@/types";
-import CreateSnippetDialog from "./snippets/CreateSnippetDialog";
+import CreateSnippetDialog from "@/components/snippets/CreateSnippetDialog";
 import { getLanguageColor } from "@/lib/languageColors";
 
 interface AppSidebarProps {

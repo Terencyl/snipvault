@@ -1,8 +1,3 @@
-/**
- * Mapping des couleurs pour chaque langage de programmation.
- * Les couleurs sont choisies pour correspondre aux couleurs officielles/reconnues de chaque langage.
- */
-
 export interface LanguageColor {
   id: string;
   label: string;
@@ -12,7 +7,6 @@ export interface LanguageColor {
 }
 
 export const languageColors: Record<string, LanguageColor> = {
-  // Web / Frontend
   typescript: {
     id: "typescript",
     label: "TypeScript",
@@ -55,8 +49,6 @@ export const languageColors: Record<string, LanguageColor> = {
     textClass: "text-emerald-500",
     hex: "#42b883",
   },
-
-  // Backend / Systèmes
   python: {
     id: "python",
     label: "Python",
@@ -134,8 +126,6 @@ export const languageColors: Record<string, LanguageColor> = {
     textClass: "text-violet-500",
     hex: "#7f52ff",
   },
-
-  // Scripting / Config
   bash: {
     id: "bash",
     label: "Bash",
@@ -185,8 +175,6 @@ export const languageColors: Record<string, LanguageColor> = {
     textClass: "text-gray-500",
     hex: "#9c4121",
   },
-
-  // Database / Query
   sql: {
     id: "sql",
     label: "SQL",
@@ -201,8 +189,6 @@ export const languageColors: Record<string, LanguageColor> = {
     textClass: "text-pink-500",
     hex: "#e10098",
   },
-
-  // Documentation
   markdown: {
     id: "markdown",
     label: "Markdown",
@@ -210,8 +196,6 @@ export const languageColors: Record<string, LanguageColor> = {
     textClass: "text-gray-600",
     hex: "#083fa1",
   },
-
-  // Other
   dockerfile: {
     id: "dockerfile",
     label: "Dockerfile",
@@ -284,9 +268,6 @@ export const languageColors: Record<string, LanguageColor> = {
   },
 };
 
-/**
- * Couleur par défaut pour les langages non reconnus
- */
 export const defaultLanguageColor: LanguageColor = {
   id: "unknown",
   label: "Unknown",
@@ -295,30 +276,15 @@ export const defaultLanguageColor: LanguageColor = {
   hex: "#6b7280",
 };
 
-/**
- * Récupère les informations de couleur pour un langage donné
- * @param languageId - L'identifiant du langage (ex: "typescript", "python")
- * @returns Les informations de couleur du langage
- */
 export function getLanguageColor(languageId: string): LanguageColor {
   const normalizedId = languageId.toLowerCase().replace(/[^a-z]/g, "");
   return languageColors[normalizedId] ?? defaultLanguageColor;
 }
 
-/**
- * Récupère la classe CSS de background pour un langage
- * @param languageId - L'identifiant du langage
- * @returns La classe Tailwind de background
- */
 export function getLanguageBgClass(languageId: string): string {
   return getLanguageColor(languageId).bgClass;
 }
 
-/**
- * Récupère la classe CSS de texte pour un langage
- * @param languageId - L'identifiant du langage
- * @returns La classe Tailwind de couleur de texte
- */
 export function getLanguageTextClass(languageId: string): string {
   return getLanguageColor(languageId).textClass;
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { CheckIcon, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,10 +28,12 @@ export default function LanguageComboBox({
   const [open, setOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<Language>();
 
-  const languages: Language[] = monaco.languages.getLanguages().map((lang) => {
-    const name = lang.aliases ? lang.aliases[0] : lang.id;
-    return { id: lang.id, label: name };
-  });
+  const languages = useMemo(() => monaco.languages.getLanguages(), []).map(
+    (lang) => {
+      const name = lang.aliases ? lang.aliases[0] : lang.id;
+      return { id: lang.id, label: name };
+    },
+  );
 
   const handleLanguageSelect = (language: Language) => {
     onLanguageSelect(language.id);

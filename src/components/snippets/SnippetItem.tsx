@@ -5,11 +5,12 @@ import {
   ItemContent,
   ItemDescription,
   ItemTitle,
-} from "../ui/item";
+} from "@/components/ui/item";
 import { X, StarIcon } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import * as monaco from "monaco-editor";
 import { getLanguageColor } from "@/lib/languageColors";
+import { useMemo } from "react";
 
 export interface SnippetCardProps {
   snippet: Snippet;
@@ -22,7 +23,7 @@ export default function SnippetItem({
   onSnippetDeleted,
   onSnippetSelected,
 }: SnippetCardProps) {
-  const languages = monaco.languages.getLanguages();
+  const languages = useMemo(() => monaco.languages.getLanguages(), []);
   const language = languages.find((lang) => lang.id === snippet.language);
   const languageColor = getLanguageColor(snippet.language);
 

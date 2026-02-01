@@ -1,5 +1,5 @@
 import { Badge } from "./ui/badge";
-import { SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
+import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 
 export interface LanguageBadgeProps {
   title: string;

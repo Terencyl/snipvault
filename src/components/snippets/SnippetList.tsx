@@ -1,6 +1,6 @@
 import { Snippet } from "@/types";
-import SnippetItem from "./SnippetItem";
-import { ScrollArea } from "../ui/scroll-area";
+import SnippetItem from "@/components/snippets/SnippetItem";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export interface SnippetListProps {
   snippets: Snippet[];

@@ -9,67 +9,45 @@ import {
   DialogClose,
   DialogHeader,
   DialogFooter,
-} from "../ui/dialog";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
-import LanguageComboBox from "../LanguageComboBox";
+import LanguageComboBox from "@/components/LanguageComboBox";
 import { Editor } from "@monaco-editor/react";
+import { useSnippetForm } from "@/hooks/useSnippetForm";
+import { SNIPPET_FORM_DEFAULTS } from "@/constants";
 
 export interface CreateSnippetDialogProps {
   onSubmit: (snippet: CreateSnippetInput) => void;
   children: ReactNode;
 }
 
-const defaultValues = {
-  title: "New Snippet",
-  language: "CSharp",
-  tags: "C#, Example",
-  description: "Your snippet description",
-  content: "// Your code here",
-};
-
 export default function CreateSnippetDialog({
   onSubmit,
   children,
 }: CreateSnippetDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [title, setTitle] = useState(defaultValues.title);
-  const [language, setLanguage] = useState(defaultValues.language);
-  const [tags, setTags] = useState(defaultValues.tags);
-  const [description, setDescription] = useState(defaultValues.description);
-  const [content, setContent] = useState(defaultValues.content);
-
-  const resetForm = () => {
-    setTitle(defaultValues.title);
-    setLanguage(defaultValues.language);
-    setTags(defaultValues.tags);
-    setDescription(defaultValues.description);
-    setContent(defaultValues.content);
-  };
+  const { formState, updateField, reset } = useSnippetForm(
+    SNIPPET_FORM_DEFAULTS,
+  );
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
-    console.log("Dialog open state:", open);
     if (!open) {
-      resetForm();
-      console.log("Form reset to default values");
+      reset();
     }
   };
 
   const handleSubmit = () => {
-    const newSnippet: CreateSnippetInput = {
-      title: title,
-      description: description,
-      content: content,
-      language: language,
-      tags: tags.split(",").map((tag) => tag.trim()),
+    onSubmit({
+      ...formState,
+      tags: formState.tags.split(",").map((tag) => tag.trim()),
       createdAt: new Date(),
-    };
-    onSubmit(newSnippet);
+    });
     setIsOpen(false);
-    resetForm();
+    reset();
   };
 
   return (
@@ -86,34 +64,36 @@ export default function CreateSnippetDialog({
         <Input
           id="title-1"
           name="title"
-          defaultValue={title}
-          onChange={(e) => setTitle(e.currentTarget.value)}
+          value={formState.title}
+          onChange={(e) => updateField("title", e.currentTarget.value)}
         />
         <Label htmlFor="title-1">Language</Label>
-        <LanguageComboBox onLanguageSelect={setLanguage} />
+        <LanguageComboBox
+          onLanguageSelect={(e) => updateField("language", e)}
+        />
         <Label htmlFor="content-1">Tags</Label>
         <Input
           id="content-1"
           name="tags"
-          defaultValue={tags}
-          onChange={(e) => setTags(e.currentTarget.value)}
+          value={formState.tags}
+          onChange={(e) => updateField("tags", e.currentTarget.value)}
         />
         <Label htmlFor="username-1">Description</Label>
         <Input
           id="username-1"
           name="description"
-          defaultValue={description}
-          onChange={(e) => setDescription(e.currentTarget.value)}
+          value={formState.description}
+          onChange={(e) => updateField("description", e.currentTarget.value)}
         />
         <Label htmlFor="bio-1">Code</Label>
         <pre className="bg-snippet-list p-4 rounded-md overflow-auto">
           <Editor
             height="25vh"
-            language={language}
-            value={content}
+            language={formState.language}
+            value={formState.content}
             defaultValue="// Your code here"
             theme="vs-dark"
-            onChange={(value) => setContent(value || "")}
+            onChange={(value) => updateField("content", value || "")}
             options={{
               minimap: { enabled: false },
               lineNumbers: "on",
