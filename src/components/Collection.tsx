@@ -1,20 +1,20 @@
 import { FolderIcon } from "lucide-react";
-import { SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
+import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 
 interface CollectionProps {
   title: string;
   count: number;
 }
 
-export default function Collection(collection: CollectionProps) {
+export default function Collection({ title, count }: CollectionProps) {
   return (
-    <SidebarMenuItem key={collection.title}>
+    <SidebarMenuItem key={title}>
       <SidebarMenuButton asChild>
         <a href="#">
           <FolderIcon className="text-foreground" />
-          <span className="text-foreground">{collection.title}</span>
+          <span className="text-foreground">{title}</span>
           <span className="text-muted-foreground align-right ml-auto">
-            ({collection.count})
+            ({count})
           </span>
         </a>
       </SidebarMenuButton>
