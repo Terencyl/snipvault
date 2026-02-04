@@ -1,8 +1,8 @@
 import { SnippetDatabase } from "@/lib/database";
 import { CreateSnippetInput, Snippet } from "@/types";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-export function useDatabase() {
+export function useSnippets() {
   const db = useRef<SnippetDatabase | null>(null);
   const [snippets, setSnippets] = useState<Snippet[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -30,9 +30,8 @@ export function useDatabase() {
   const createSnippet = async (snippet: CreateSnippetInput) => {
     try {
       if (!db.current) return;
-      await db.current.createSnippet(snippet);
-      const updatedSnippets = await db.current.getAllSnippets();
-      setSnippets(updatedSnippets);
+      const newSnippet = await db.current.createSnippet(snippet);
+      setSnippets(prev => [...prev, newSnippet]);
     } catch (error) {
       setError("Error creating snippet");
       console.log(error);
@@ -50,11 +49,34 @@ export function useDatabase() {
     }
   };
 
+  const updateSnippet = async (snippet: Snippet) => {
+    try {
+      if (!db.current) return;
+      await db.current.updateSnippet(snippet);
+      await refreshSnippets();
+    } catch (error) {
+      setError("Error updating snippet");
+      console.log(error);
+    }
+  };
+
   const refreshSnippets = async () => {
     if (!db.current) return;
     const updatedSnippets = await db.current.getAllSnippets();
     setSnippets(updatedSnippets);
   };
+
+  const languageStats = useMemo(() => {
+    const languages: { [language: string]: number } = {};
+    snippets.forEach((snippet) => {
+      if (languages[snippet.language]) {
+        languages[snippet.language] += 1;
+      } else {
+        languages[snippet.language] = 1;
+      }
+    });
+    return languages;
+  }, [snippets]);
 
   const clearError = useCallback(() => setError(null), []);
 
@@ -65,6 +87,8 @@ export function useDatabase() {
     createSnippet,
     deleteSnippet,
     refreshSnippets,
+    updateSnippet,
+    languageStats,
     clearError,
   };
 }

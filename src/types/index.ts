@@ -4,9 +4,10 @@ export interface Snippet {
   description: string;
   content: string;
   language: string;
+  isFavorite: boolean;
   tags: string[];
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt?: Date;
 }
 
 export type CreateSnippetInput = Omit<Snippet, "id" | "updatedAt">;

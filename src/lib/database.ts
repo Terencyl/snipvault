@@ -7,6 +7,7 @@ interface SnippetRow {
   description: string;
   content: string;
   language: string;
+  favorite: number;
   tags: string;
   created_at: string;
   updated_at: string;
@@ -20,24 +21,26 @@ export class SnippetDatabase {
     return this.db;
   }
 
-  async createSnippet(snippet: CreateSnippetInput): Promise<number> {
+  async createSnippet(snippet: CreateSnippetInput): Promise<Snippet> {
     if (!this.db) {
       await this.init();
     }
 
     try {
       const result = await this.db!.execute(
-        "INSERT INTO snippets (title, description, content, language, tags, created_at) VALUES (?, ?, ?, ?, ?, ?)",
+        "INSERT INTO snippets (title, description, content, language, favorite, tags, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
         [
           snippet.title,
           snippet.description,
           snippet.content,
           snippet.language,
+          snippet.isFavorite ? 1 : 0,
           snippet.tags.join(","),
           snippet.createdAt.toISOString(),
         ],
       );
-      return result.lastInsertId!;
+      const id = result.lastInsertId!;
+      return { id, ...snippet };
     } catch (error) {
       console.error("Error creating snippet:", error);
       throw error;
@@ -59,6 +62,7 @@ export class SnippetDatabase {
         description: snippet.description,
         content: snippet.content,
         language: snippet.language,
+        isFavorite: snippet.favorite === 1,
         tags: snippet.tags.split(",").map((tag) => tag.trim()),
         createdAt: new Date(snippet.created_at),
         updatedAt: new Date(snippet.updated_at),
@@ -79,15 +83,23 @@ export class SnippetDatabase {
         "SELECT * FROM snippets WHERE id = ?",
         [id],
       );
+
+      if (!snippet || snippet.length === 0) {
+        throw new Error("Snippet with id ${id} not found");
+      }
+
+      const row = snippet[0];
+
       return {
-        id: snippet[0].id,
-        title: snippet[0].title,
-        description: snippet[0].description,
-        content: snippet[0].content,
-        language: snippet[0].language,
-        tags: snippet[0].tags.split(",").map((tag) => tag.trim()),
-        createdAt: new Date(snippet[0].created_at),
-        updatedAt: new Date(snippet[0].updated_at),
+        id: row.id,
+        title: row.title,
+        description: row.description,
+        content: row.content,
+        language: row.language,
+        isFavorite: row.favorite === 1,
+        tags: row.tags.split(",").map((tag) => tag.trim()),
+        createdAt: new Date(row.created_at),
+        updatedAt: new Date(row.updated_at),
       };
     } catch (error) {
       console.error("Error fetching snippet:", error);
@@ -95,15 +107,24 @@ export class SnippetDatabase {
     }
   }
 
-  async updateSnippet(id: number, snippet: Snippet): Promise<void> {
+  async updateSnippet(snippet: Snippet): Promise<void> {
     if (!this.db) {
       await this.init();
     }
 
     try {
       await this.db!.execute(
-        "UPDATE snippets SET title = ?, content = ?, updated_at = ? WHERE id = ?",
-        [snippet.title, snippet.content, Date.now(), id],
+        "UPDATE snippets SET title = ?, description = ?, content = ?, language = ?, favorite = ?, tags = ?, updated_at = ? WHERE id = ?",
+        [
+          snippet.title,
+          snippet.description,
+          snippet.content,
+          snippet.language,
+          snippet.isFavorite ? 1 : 0,
+          snippet.tags.join(","),
+          Date.now(),
+          snippet.id,
+        ],
       );
     } catch (error) {
       console.error("Error updating snippet:", error);

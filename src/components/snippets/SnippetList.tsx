@@ -6,12 +6,14 @@ export interface SnippetListProps {
   snippets: Snippet[];
   onSnippetDeleted: (id: number) => void;
   onSnippetSelected: (snippet: Snippet) => void;
+  onSnippetFavoriteToggle: (id: number) => void;
 }
 
 export default function SnippetList({
   snippets,
   onSnippetDeleted,
   onSnippetSelected,
+  onSnippetFavoriteToggle,
 }: SnippetListProps) {
   return (
     <ScrollArea className="h-full bg-snippet-list ">
@@ -25,6 +27,7 @@ export default function SnippetList({
             snippet={snippet}
             onSnippetDeleted={onSnippetDeleted}
             onSnippetSelected={onSnippetSelected}
+            onSnippetFavoriteToggle={onSnippetFavoriteToggle}
           />
         ))}
       </div>

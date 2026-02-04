@@ -43,6 +43,7 @@ export default function CreateSnippetDialog({
   const handleSubmit = () => {
     onSubmit({
       ...formState,
+      isFavorite: false,
       tags: formState.tags.split(",").map((tag) => tag.trim()),
       createdAt: new Date(),
     });

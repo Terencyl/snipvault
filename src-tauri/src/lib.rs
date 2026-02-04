@@ -2,10 +2,11 @@ use tauri_plugin_sql::{Migration, MigrationKind};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    let migrations = vec![Migration {
-        version: 1,
-        description: "Create snippets table",
-        sql: "CREATE TABLE snippets (
+    let migrations = vec![
+        Migration {
+            version: 1,
+            description: "Create snippets table",
+            sql: "CREATE TABLE snippets (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 title TEXT NOT NULL,
                 description TEXT,
@@ -15,8 +16,15 @@ pub fn run() {
                 created_at TEXT NOT NULL,
                 updated_at TEXT
          );",
-        kind: MigrationKind::Up,
-    }];
+            kind: MigrationKind::Up,
+        },
+        Migration {
+            version: 2,
+            description: "Add favorite column to snippets table",
+            sql: "ALTER TABLE snippets ADD COLUMN favorite INTEGER DEFAULT 0;",
+            kind: MigrationKind::Up,
+        },
+    ];
 
     tauri::Builder::default()
         .plugin(

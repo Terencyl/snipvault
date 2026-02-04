@@ -1,12 +1,16 @@
 import { Snippet } from "@/types";
 import { Editor } from "@monaco-editor/react";
+import { X } from "lucide-react";
 
 export interface SnippetViewProps {
   snippet: Snippet;
+  onDeleteSnippetTag: (tag: string) => void;
 }
 
-export default function SnippetView({ snippet }: SnippetViewProps) {
-  
+export default function SnippetView({
+  snippet,
+  onDeleteSnippetTag,
+}: SnippetViewProps) {
   return (
     <div className="flex-1 bg-background p-6">
       <h1 className="text-2xl font-bold mb-2">{snippet.title}</h1>
@@ -19,6 +23,10 @@ export default function SnippetView({ snippet }: SnippetViewProps) {
               className="inline-block bg-accent text-accent-foreground px-2 py-1 mr-2 rounded-full text-sm"
             >
               {tag}
+              <X
+                className="inline-block w-3 h-3 cursor-pointer hover:bg-accent/50 ml-1 rounded-full"
+                onClick={() => onDeleteSnippetTag(tag)}
+              />
             </span>
           ))}
         </div>

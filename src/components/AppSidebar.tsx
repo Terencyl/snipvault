@@ -47,7 +47,7 @@ export function AppSidebar({ onNewSnippet }: AppSidebarProps) {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="px-2 pt-4 pb-2 text-2xl font-bold mt-2 mb-2 ">
+          <SidebarGroupLabel className="px-2 pt-4 pb-2 text-2xl font-bold mt-2 mb-2">
             SnipVault
           </SidebarGroupLabel>
           <Separator className="my-2" />
